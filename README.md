@@ -337,8 +337,8 @@ Este diagrama fornece uma visão clara da separação de responsabilidades e do 
     SERVER_PORT=8080
     DB_HOST=localhost
     DB_PORT=5432
-    DB_USER=seu_usuario_db
-    DB_PASSWORD=sua_senha_db
+    DB_USER=postgres
+    DB_PASSWORD=postgres
     DB_NAME=customer_db
     ENVIRONMENT=development # ou production
     
