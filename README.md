@@ -199,6 +199,7 @@ Este diagrama decompõe o contêiner `API Application (Go)` em seus principais b
 
 ![C4_Component](diagramas/C4_Component.png)
 
+
 **Componentes Principais dentro da `API Application (Go)`:**
 
 *   **`Customer Handler (Gin)`**: Localizado em `internal/handler`, este componente é responsável por:
@@ -222,17 +223,22 @@ Este diagrama decompõe o contêiner `API Application (Go)` em seus principais b
 **Interações Chave:**
 
 1.  O `Customer Handler` recebe uma requisição HTTP e chama um método no `Customer Service` (ex: `CreateCustomer`).
+
 2.  O `Customer Service` utiliza o `Domain Model` para validar os dados recebidos (ex: chamando `customer.Validate()`).
+
 3.  O `Customer Service` chama o método correspondente no `Customer Repository` (ex: `repo.Create(customer)`).
+
 4.  O `Customer Repository` executa a operação no `Database (PostgreSQL)` usando GORM.
+
 5.  O resultado (ou erro) é retornado pela cadeia: Repositório -> Serviço -> Handler.
+
 6.  O `Customer Handler` envia a resposta final ao cliente.
 
 Este diagrama ajuda a entender a estrutura interna da aplicação e como as diferentes responsabilidades são separadas em componentes coesos, facilitando a manutenção e evolução do código.
 
 
-
 ### Nível 4: Código (Code)
+
 
 Este diagrama ilustra a arquitetura e as dependências entre os principais componentes do projeto `customer-api`. Ele segue uma estrutura de pacotes comum em projetos Go, separando responsabilidades como configuração, domínio (modelo, repositório, serviço), handlers HTTP, middlewares e utilitários.
 
