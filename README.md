@@ -229,9 +229,9 @@ Este diagrama ajuda a entender a estrutura interna da aplicação e como as dife
 ### Nível 4: Código (Code)
 
 
-Este diagrama ilustra a arquitetura e as dependências entre os principais componentes do projeto `customer-api`. Ele segue uma estrutura de pacotes comum em projetos Go, separando responsabilidades como configuração, domínio (modelo, repositório, serviço), handlers HTTP, middlewares e utilitários.
+Este diagrama ilustra a arquitetura e as dependências entre os principais componentes do projeto `customer-api`. Ele segue uma estrutura de pacotes comum em projetos Go, separando responsabilidades como configuração, domínio (modelo, repositório, serviço), handlers HTTP, middlewares e utilitários. 
 
-A seguir estão o diagramas que demonstra as dependencias e o diagrama de pacotes e componentes: 
+Dessa forma, para facilitar a visualização, o diagrama foi dividido em dois: um de dependencias e o outro de pacotes e componentes: 
 
 
 ![C4_classes_dependences](diagramas/C4_classes_dependences.png)
