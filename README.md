@@ -4,11 +4,15 @@ API RESTful para gestão de clientes desenvolvida em Go utilizando o framework G
 
 Este projeto foi desenvolvido como uma tarefa da `Pós Graduação em Arquitetura de Software e Inteligência Artificial` ministrado pela `XPEducação`.
 
+
 ## Descrição
+
 
 Esta API fornece endpoints para realizar operações CRUD (Criar, Ler, Atualizar, Deletar) em registros de clientes. Ela também inclui funcionalidades para buscar clientes por nome e contar o número total de clientes cadastrados. A API utiliza PostgreSQL como banco de dados e Viper para gerenciamento de configurações. A documentação da API é gerada automaticamente usando Swagger.
 
+
 ## Funcionalidades
+
 
 *   **Criar Cliente:** Adiciona um novo cliente ao sistema.
 *   **Buscar Cliente por ID:** Retorna os dados de um cliente específico.
@@ -21,7 +25,9 @@ Esta API fornece endpoints para realizar operações CRUD (Criar, Ler, Atualizar
 *   **Logging:** Middleware para registrar informações sobre as requisições HTTP.
 *   **Documentação Swagger:** Documentação interativa da API.
 
+
 ## Tecnologias Utilizadas
+
 
 *   **Go:** Linguagem de programação principal.
 *   **Gin:** Framework web para Go.
@@ -31,13 +37,17 @@ Esta API fornece endpoints para realizar operações CRUD (Criar, Ler, Atualizar
 *   **Swagger:** Documentação da API.
 *   **Go Playground Validator:** Validação de dados de entrada.
 
+
 ## Pré-requisitos
+
 
 *   Go (versão 1.24.2 ou superior recomendada)
 *   PostgreSQL (pode ser executado localmente ou via Docker)
 *   Git
 
+
 ## Estrutura de Pastas (Padrão MVC)
+
 
 ```bash
 /customer-api
@@ -74,7 +84,8 @@ Esta API fornece endpoints para realizar operações CRUD (Criar, Ler, Atualizar
   README.md               # Documentação
 ```
 
-## Explicação da Estrutura de Pastas e Componentes
+
+## Estrutura de Pastas e Componentes Principais
 
 
 ### 1. Padrão MVC no Contexto da API
@@ -113,16 +124,13 @@ Para visualizar a arquitetura da Customer API, foi utilizado o modelo C4, que de
 ### Nível 1: Diagrama de Contexto do Sistema
 
 
-
-### Nível 1: Diagrama de Contexto do Sistema
-
-Este diagrama mostra a API Customer (`Customer API`) como uma "caixa preta" e como ela se integra ao seu ambiente, interagindo com usuários e outros sistemas externos.
+Este diagrama mostra a API Customer (`Customer API`) como uma "caixa preta" e como ela se integra ao ambiente, interagindo com usuários e outros sistemas externos.
 
 ![C4_Context](diagramas/C4_Context.png)
 
 **Elementos Principais:**
 
-*   **Sistema Principal:** `Customer API` - O sistema que estamos construindo, responsável pelo gerenciamento de clientes.
+*   **Sistema Principal:** `Customer API` - O sistema que está sendo construído, responsável pelo gerenciamento de clientes.
 *   **Usuários/Personas:**
     *   `Usuário Final`: Interage com o sistema indiretamente, através de uma aplicação cliente.
 
@@ -143,15 +151,85 @@ Este diagrama de contexto ajuda a entender o escopo do sistema `Customer API` e 
 ### Nível 2: Diagrama de Contêiner
 
 
-Este diagrama detalha os principais blocos de construção da API Customer, como a própria aplicação web/API, o banco de dados, etc.
+
+
+
+### Nível 2: Diagrama de Contêiner
+
+
+Este diagrama detalha as partes principais e separadamente implantáveis/executáveis do sistema `Customer API`. Ele "amplia" a caixa preta do diagrama de contexto, mostrando os blocos de construção de alto nível.
+
 
 ![C4_Container](diagramas/C4_Container.png)
 
+
+**Contêineres Principais:**
+
+*   **`API Application (Go)`**: A aplicação web/serviço construída em Go que expõe a API RESTful. É o contêiner principal que executa a lógica de negócios (`Customer Service`), lida com as requisições HTTP (`Customer Handler`) e interage com o banco de dados através da camada de repositório.
+
+*   **`Database (PostgreSQL)`**: O servidor de banco de dados onde os dados dos clientes são efetivamente armazenados e gerenciados. A `API Application` interage diretamente com este contêiner para persistir e recuperar dados.
+
+**Sistemas Externos (Interagindo com os Contêineres):**
+
+*   **`Aplicação Cliente`**: Aplicação externa (Web, Mobile, outro serviço) que consome a `API Application` enviando requisições.
+
+*   **`Usuário Final`**: Pessoa que utiliza a `Aplicação Cliente` para interagir indiretamente com a `Customer API`.
+
+**Interações Chave:**
+
+1.  A `Aplicação Cliente` envia requisições HTTP/JSON para a `API Application (Go)` (ex: para criar um novo cliente).
+
+2.  A `API Application (Go)` processa a requisição, aplica a lógica de negócio necessária e executa operações (ex: comandos SQL via GORM) no `Database (PostgreSQL)` através de uma conexão da rede.
+
+3.  O `Database (PostgreSQL)` armazena ou recupera os dados solicitados e retorna o resultado para a `API Application`.
+
+4.  A `API Application (Go)` formata a resposta e a envia de volta para a `Aplicação Cliente`.
+
+Este diagrama ajuda a entender a arquitetura de alto nível em termos de processos ou unidades de implantação e como eles se comunicam entre si e com sistemas externos.
+
+
 ### Nível 3: Diagrama de Componentes
 
-Este diagrama foca nos componentes internos da aplicação API, mostrando como eles colaboram para realizar as funcionalidades.
+
+
+
+### Nível 3: Diagrama de Componentes
+
+Este diagrama decompõe o contêiner `API Application (Go)` em seus principais blocos de construção lógicos ou módulos, mostrando como eles colaboram para entregar as funcionalidades da API de gerenciamento de clientes.
 
 ![C4_Component](diagramas/C4_Component.png)
+
+**Componentes Principais dentro da `API Application (Go)`:**
+
+*   **`Customer Handler (Gin)`**: Localizado em `internal/handler`, este componente é responsável por:
+    *   Receber as requisições HTTP que chegam através do framework Gin.
+    *   Extrair dados das requisições (parâmetros de rota, query strings, corpo JSON).
+    *   Realizar validações básicas de entrada.
+    *   Chamar os métodos apropriados do `Customer Service` para processar a requisição.
+    *   Formatar as respostas (sucesso ou erro) em JSON e enviá-las de volta ao cliente.
+*   **`Customer Service`**: Localizado em `internal/domain/service`, este componente encapsula a lógica de negócios principal:
+    *   Orquestra as operações de gerenciamento de clientes (criar, buscar, atualizar, deletar, contar).
+    *   Aplica regras de negócio e validações mais complexas (utilizando o `Domain Model`).
+    *   Interage com o `Customer Repository` para persistir e recuperar dados.
+*   **`Customer Repository (GORM)`**: Localizado em `internal/domain/repository`, este componente abstrai o acesso aos dados:
+    *   Implementa a interface `CustomerRepository`.
+    *   Traduz as operações de domínio (ex: `GetByID`, `Create`) em operações específicas do banco de dados (ex: comandos SQL executados via GORM).
+    *   Interage diretamente com o contêiner `Database (PostgreSQL)`.
+*   **`Domain Model (Customer)`**: Localizado em `internal/domain/model`, define as estruturas de dados centrais:
+    *   Representa a entidade `Customer` com seus atributos.
+    *   Inclui métodos de validação (`Validate()`) para garantir a integridade dos dados.
+
+**Interações Chave:**
+
+1.  O `Customer Handler` recebe uma requisição HTTP e chama um método no `Customer Service` (ex: `CreateCustomer`).
+2.  O `Customer Service` utiliza o `Domain Model` para validar os dados recebidos (ex: chamando `customer.Validate()`).
+3.  O `Customer Service` chama o método correspondente no `Customer Repository` (ex: `repo.Create(customer)`).
+4.  O `Customer Repository` executa a operação no `Database (PostgreSQL)` usando GORM.
+5.  O resultado (ou erro) é retornado pela cadeia: Repositório -> Serviço -> Handler.
+6.  O `Customer Handler` envia a resposta final ao cliente.
+
+Este diagrama ajuda a entender a estrutura interna da aplicação e como as diferentes responsabilidades são separadas em componentes coesos, facilitando a manutenção e evolução do código.
+
 
 
 ### Nível 4: Código (Code)
