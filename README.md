@@ -107,7 +107,7 @@ Esta API fornece endpoints para realizar operações CRUD (Criar, Ler, Atualizar
 ## Arquitetura (Diagramas C4)
 
 
-Para visualizar a arquitetura da Customer API, foi utilizado o modelo C4, que descreve o sistema em diferentes níveis de abstração: Contexto, Contêineres e Componentes. Os diagramas correspondentes estão localizados na pasta `diagramas/`.
+Para visualizar a arquitetura da Customer API, foi utilizado o modelo C4, que descreve o sistema em diferentes níveis de abstração: Contexto, Contêineres e Componentes. Os diagramas correspondentes estão localizados na pasta `diagramas/` e foram gerados utilizando o **PlantUML**.
 
 
 ### Nível 1: Diagrama de Contexto do Sistema
@@ -303,6 +303,35 @@ A aplicação utiliza variáveis de ambiente para configuração. As seguintes v
 *   `ENVIRONMENT`: Ambiente de execução (`development` ou `production`, padrão: `development`).
 
 
-## Licença
+## Referências
 
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo `LICENSE` para mais detalhes (se houver um).
+
+
+Golang Documentation
+
+https://go.dev/doc/
+
+
+Gin Web Framework
+
+https://gin-gonic.com/
+
+
+What is Viper?
+
+https://github.com/spf13/viper
+
+
+The C4 model for visualising software architecture
+
+https://c4model.com/
+
+
+PlantUML 
+
+https://plantuml.com/
+
+
+PlantUML (VSCode extension)
+
+https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml
