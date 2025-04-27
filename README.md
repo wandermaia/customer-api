@@ -147,13 +147,6 @@ Este diagrama mostra a API Customer (`Customer API`) como uma "caixa preta" e co
 Este diagrama de contexto ajuda a entender o escopo do sistema `Customer API` e suas principais dependências externas.
 
 
-
-### Nível 2: Diagrama de Contêiner
-
-
-
-
-
 ### Nível 2: Diagrama de Contêiner
 
 
@@ -190,10 +183,6 @@ Este diagrama ajuda a entender a arquitetura de alto nível em termos de process
 
 ### Nível 3: Diagrama de Componentes
 
-
-
-
-### Nível 3: Diagrama de Componentes
 
 Este diagrama decompõe o contêiner `API Application (Go)` em seus principais blocos de construção lógicos ou módulos, mostrando como eles colaboram para entregar as funcionalidades da API de gerenciamento de clientes.
 
@@ -409,6 +398,16 @@ A aplicação utiliza variáveis de ambiente para configuração. As seguintes v
 *   `DB_NAME`: Nome do banco de dados.
 *   `ENVIRONMENT`: Ambiente de execução (`development` ou `production`, padrão: `development`).
 
+
+## Testes
+
+Para executar os testes automatizados, basta executar o seguinte comando a partir da raiz do projeto:
+
+```bash
+
+go test ./...
+
+```
 
 ## Referências
 
