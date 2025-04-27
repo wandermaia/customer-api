@@ -1,0 +1,297 @@
+basePath: /api
+definitions:
+  model.Customer:
+    description: Entidade que representa um cliente no sistema
+    properties:
+      active:
+        example: true
+        type: boolean
+      address:
+        example: Av. Paulista, 1000, São Paulo - SP
+        type: string
+      created_at:
+        example: "2025-04-23T15:04:05Z"
+        type: string
+      email:
+        example: joao@example.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: João da Silva
+        maxLength: 100
+        minLength: 3
+        type: string
+      phone:
+        example: (11) 98765-4321
+        maxLength: 15
+        minLength: 8
+        type: string
+      updated_at:
+        example: "2025-04-23T15:04:05Z"
+        type: string
+    required:
+    - email
+    - name
+    type: object
+  utils.CountResponse:
+    description: Modelo para resposta de contagem de registros
+    properties:
+      count:
+        example: 42
+        type: integer
+    type: object
+  utils.ErrorResponse:
+    description: Modelo padrão para respostas de erro da API
+    properties:
+      error:
+        example: Mensagem de erro
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://www.example.com/support
+  description: API RESTful para gestão de clientes
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Cliente API
+  version: "1.0"
+paths:
+  /customers:
+    get:
+      consumes:
+      - application/json
+      description: Retorna uma lista com todos os clientes cadastrados
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Customer'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Listar todos os clientes
+      tags:
+      - customers
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo cliente com os dados fornecidos
+      parameters:
+      - description: Dados do cliente
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/model.Customer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Criar um novo cliente
+      tags:
+      - customers
+  /customers/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove um cliente do sistema com base no ID
+      parameters:
+      - description: ID do Cliente
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Excluir cliente
+      tags:
+      - customers
+    get:
+      consumes:
+      - application/json
+      description: Retorna os dados de um cliente específico com base no ID
+      parameters:
+      - description: ID do Cliente
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Buscar cliente por ID
+      tags:
+      - customers
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de um cliente existente
+      parameters:
+      - description: ID do Cliente
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados atualizados do cliente
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/model.Customer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Atualizar cliente
+      tags:
+      - customers
+  /customers/count:
+    get:
+      consumes:
+      - application/json
+      description: Retorna o número total de clientes cadastrados no sistema
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.CountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Contar clientes
+      tags:
+      - customers
+  /customers/search:
+    get:
+      consumes:
+      - application/json
+      description: Retorna uma lista de clientes que correspondem ao nome fornecido
+      parameters:
+      - description: Nome do cliente
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Customer'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Buscar clientes por nome
+      tags:
+      - customers
+schemes:
+- http
+swagger: "2.0"
