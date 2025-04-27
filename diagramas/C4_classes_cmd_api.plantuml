@@ -1,0 +1,15 @@
+@startuml
+' Define a skin for better visuals
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "cmd/api" <<Folder>> {
+  class main {
+    .. main() ..
+    + Creates dependencies
+    + Starts server
+  }
+}
+
+
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+' Define a skin for better visuals
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "pkg/database" <<Folder>> {
+    class "NewPostgresConnection()" as NewPostgresConnectionFunc {
+        .. static ..
+        + NewPostgresConnection(cfg *config.Config) : (*gorm.DB, error)
+    }
+    NewPostgresConnectionFunc --> config.Config : uses
+    NewPostgresConnectionFunc ..> "gorm.DB" : creates
+}
+
+
+@enduml

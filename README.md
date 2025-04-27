@@ -231,7 +231,13 @@ Este diagrama ajuda a entender a estrutura interna da aplicação e como as dife
 
 Este diagrama ilustra a arquitetura e as dependências entre os principais componentes do projeto `customer-api`. Ele segue uma estrutura de pacotes comum em projetos Go, separando responsabilidades como configuração, domínio (modelo, repositório, serviço), handlers HTTP, middlewares e utilitários.
 
-![C4_Codigo](diagramas/C4_classes.png)
+A seguir estão o diagramas que demonstra as dependencias e o diagrama de pacotes e componentes: 
+
+
+![C4_classes_dependences](diagramas/C4_classes_dependences.png)
+
+
+![C4_classes](diagramas/C4_classes.png)
 
 
 #### Explicação dos Pacotes e Componentes
@@ -239,9 +245,17 @@ Este diagrama ilustra a arquitetura e as dependências entre os principais compo
 *   **`cmd/api`**: Contém o ponto de entrada da aplicação (`main`).
     *   `main`: Responsável pela inicialização: carrega configurações, estabelece conexão com o banco, cria instâncias dos serviços, repositórios e handlers, injeta as dependências e inicia o servidor HTTP (usando Gin).
 
+
+![C4_classes_cmd_api](diagramas/C4_classes_cmd_api.png)
+
+
 *   **`internal/config`**: Gerencia a configuração da aplicação.
     *   `Config`: Struct que armazena os valores de configuração (portas, credenciais de DB, etc.).
     *   `LoadConfig()`: Função que lê as configurações (de arquivos ou variáveis de ambiente usando `viper`) e retorna um ponteiro para `Config`.
+
+
+![C4_classes_internal_config](diagramas/C4_classes_internal_config.png)
+
 
 *   **`internal/domain`**: Contém a lógica central e as regras de negócio.
     *   **`model`**: Define as estruturas de dados do domínio.
@@ -253,17 +267,36 @@ Este diagrama ilustra a arquitetura e as dependências entre os principais compo
         *   `CustomerService` (Interface): Contrato para as operações de negócio relacionadas a `Customer`.
         *   `customerService`: Implementação de `CustomerService`. Utiliza `CustomerRepository` para interagir com os dados e aplica regras de negócio.
 
+
+![C4_classes_internal_domains](diagramas/C4_classes_internal_domains.png)
+
+
 *   **`internal/handler`**: Responsável por lidar com as requisições HTTP e respostas.
     *   `CustomerHandler`: Recebe requisições HTTP (via `gin.Context`), interage com `CustomerService`, e formata/envia respostas JSON (usando `model.Customer`, `utils.ErrorResponse`, `utils.CountResponse`). Registra as rotas no `gin.Engine`.
+
+
+![C4_classes_internal_handler](diagramas/C4_classes_internal_handler.png)
+
 
 *   **`internal/middleware`**: Contém middlewares HTTP.
     *   `Logger()`: Função que retorna um `gin.HandlerFunc` para logging de requisições.
 
+
+![C4_classes_internal_middleware](diagramas/C4_classes_internal_middleware.png)
+
+
 *   **`internal/utils`**: Pacote para funções e tipos utilitários.
     *   `ErrorResponse`, `CountResponse`: Structs para padronizar respostas JSON.
 
+
+![C4_classes_internal_utils](diagramas/C4_classes_internal_utils.png)
+
+
 *   **`pkg/database`**: Utilitários relacionados ao banco de dados (fora do `internal` pois pode ser potencialmente reutilizável).
     *   `NewPostgresConnection()`: Função que recebe `*config.Config` e estabelece a conexão com o banco de dados, retornando `*gorm.DB`.
+
+
+![C4_classes_pkg_database](diagramas/C4_classes_pkg_database.png)
 
 
 ### Principais Fluxos e Dependências
@@ -409,8 +442,70 @@ go test ./...
 
 ```
 
-## Referências
 
+## Geração de Mocks e Execução de Testes
+
+Este projeto utiliza `gomock` e `mockgen` para criar objetos mockados das interfaces (como `CustomerRepository` e `CustomerService`), permitindo testes de unidade isolados para as camadas de serviço e handler.
+
+### 1. Instalação do Mockgen
+
+Se você ainda não tem o `mockgen` instalado, execute o seguinte comando:
+
+```bash
+
+go install go.uber.org/mock/mockgen@latest
+
+```
+Isso instalará o executável mockgen no seu `$GOPATH/bin` ou `$HOME/go/bin`. Certifique-se de que este diretório esteja no seu **PATH**.
+
+
+### 2. Geração dos Mocks
+
+
+Os mocks são gerados a partir das interfaces definidas no domínio. Para gerar (ou regenerar) os mocks necessários para os testes, execute os seguintes comandos a partir da raiz do projeto:
+
+- Mock para `CustomerRepository`:
+
+```bash
+mockgen -source=internal/domain/repository/customer_repo.go -destination=internal/domain/repository/mock/mock_customer_repository.go -package=mock_repository
+
+```
+- Mock para `CustomerService`:
+
+```bash
+
+mockgen -source=internal/domain/service/customer_service.go -destination=internal/domain/service/mock/mock_customer_service.go -package=mock_service
+
+```
+
+Descrição dos parâmetros utilizados com o comando `mockgen`:
+
+- **-source:** Especifica o arquivo da interface Go que será mockada.
+- **-destination:** Define o caminho e o nome do arquivo onde o código do mock será gerado.
+- **-package:** Define o nome do pacote para o arquivo de mock gerado.
+
+
+### 2. Execução dos Testes
+
+
+Com os mocks gerados, você pode executar todos os testes de unidade do projeto (incluindo os que dependem dos mocks) com o seguinte comando, executado na raiz do projeto:
+
+```bash
+
+go test ./... -v
+
+
+```
+
+- **./...:** Indica ao Go para executar testes em todos os subdiretórios.
+
+- **-v:** (Opcional) Ativa o modo verbose, mostrando o status de cada teste individualmente.
+
+Isso compilará e executará todos os arquivos _test.go encontrados no projeto, reportando os resultados.
+
+
+
+## Referências
 
 
 Golang Documentation
@@ -426,6 +521,16 @@ https://gin-gonic.com/
 What is Viper?
 
 https://github.com/spf13/viper
+
+
+Testify - Thou Shalt Write Tests
+
+https://github.com/stretchr/testify
+
+
+gomock
+
+https://github.com/golang/mock
 
 
 The C4 model for visualising software architecture

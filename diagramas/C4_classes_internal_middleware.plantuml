@@ -1,0 +1,14 @@
+@startuml
+' Define a skin for better visuals
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "internal/middleware" <<Folder>> {
+    class "Logger()" as LoggerFunc {
+        .. static ..
+        + Logger() : gin.HandlerFunc
+    }
+    LoggerFunc --> "gin.Context" : uses
+}
+
+@enduml

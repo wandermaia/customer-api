@@ -1,0 +1,26 @@
+@startuml
+' Define a skin for better visuals
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "internal/handler" <<Folder>> {
+  class CustomerHandler {
+    - service: service.CustomerService
+    --
+    + RegisterRoutes(router *gin.Engine)
+    + CreateCustomer(c *gin.Context)
+    + GetCustomerByID(c *gin.Context)ð
+    + GetAllCustomers(c *gin.Context)
+    + GetCustomersByName(c *gin.Context)
+    + UpdateCustomer(c *gin.Context)
+    + DeleteCustomer(c *gin.Context)
+    + CountCustomers(c *gin.Context)
+  }
+  CustomerHandler --> service.CustomerService : uses
+  CustomerHandler --> model.Customer : uses
+  CustomerHandler --> "gin.Context" : uses
+  CustomerHandler --> utils.ErrorResponse : uses
+  CustomerHandler --> utils.CountResponse : uses
+}
+
+@enduml

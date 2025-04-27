@@ -1,0 +1,26 @@
+@startuml
+' Define a skin for better visuals
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "internal/config" <<Folder>> {
+  class Config {
+    + ServerPort: string
+    + DBHost: string
+    + DBPort: string
+    + DBUser: string
+    + DBPassword: string
+    + DBName: string
+    + Environment: string
+  }
+  Config ..> viper : uses
+
+  class "LoadConfig()" as LoadConfigFunc {
+    .. static ..
+    + LoadConfig() : (*Config, error)
+  }
+  LoadConfigFunc --> Config : creates
+}
+
+
+@enduml

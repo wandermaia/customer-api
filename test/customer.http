@@ -3,10 +3,15 @@ GET http://localhost:8080/api/customers
 Content-Type: application/json
 
 ###
+# Health check do gin
+GET http://localhost:8080/health
+Content-Type: application/json
+
+
+###
 # Listar todos a quantidade de clientes
 GET http://localhost:8080/api/customers/count
 Content-Type: application/json
-
 
 
 ###

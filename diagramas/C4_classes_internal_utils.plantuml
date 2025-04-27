@@ -1,0 +1,16 @@
+@startuml
+' Define a skin for better visuals
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "internal/utils" <<Folder>> {
+    class ErrorResponse {
+        + Error: string
+    }
+    class CountResponse {
+        + Count: int64
+    }
+}
+
+
+@enduml

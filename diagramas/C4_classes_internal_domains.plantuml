@@ -3,33 +3,6 @@
 skinparam classAttributeIconSize 0
 skinparam packageStyle rectangle
 
-package "cmd/api" <<Folder>> {
-  class main {
-    .. main() ..
-    + Creates dependencies
-    + Starts server
-  }
-}
-
-package "internal/config" <<Folder>> {
-  class Config {
-    + ServerPort: string
-    + DBHost: string
-    + DBPort: string
-    + DBUser: string
-    + DBPassword: string
-    + DBName: string
-    + Environment: string
-  }
-  Config ..> viper : uses
-
-  class "LoadConfig()" as LoadConfigFunc {
-    .. static ..
-    + LoadConfig() : (*Config, error)
-  }
-  LoadConfigFunc --> Config : creates
-}
-
 package "internal/domain/model" <<Folder>> {
   class Customer {
     + ID: uint
@@ -98,52 +71,6 @@ package "internal/domain/service" <<Folder>> {
   customerService ..|> CustomerService : implements
   customerService --> repository.CustomerRepository : uses
   customerService --> model.Customer : uses
-}
-
-package "internal/handler" <<Folder>> {
-  class CustomerHandler {
-    - service: service.CustomerService
-    --
-    + RegisterRoutes(router *gin.Engine)
-    + CreateCustomer(c *gin.Context)
-    + GetCustomerByID(c *gin.Context)
-    + GetAllCustomers(c *gin.Context)
-    + GetCustomersByName(c *gin.Context)
-    + UpdateCustomer(c *gin.Context)
-    + DeleteCustomer(c *gin.Context)
-    + CountCustomers(c *gin.Context)
-  }
-  CustomerHandler --> service.CustomerService : uses
-  CustomerHandler --> model.Customer : uses
-  CustomerHandler --> "gin.Context" : uses
-  CustomerHandler --> utils.ErrorResponse : uses
-  CustomerHandler --> utils.CountResponse : uses
-}
-
-package "internal/middleware" <<Folder>> {
-    class "Logger()" as LoggerFunc {
-        .. static ..
-        + Logger() : gin.HandlerFunc
-    }
-    LoggerFunc --> "gin.Context" : uses
-}
-
-package "internal/utils" <<Folder>> {
-    class ErrorResponse {
-        + Error: string
-    }
-    class CountResponse {
-        + Count: int64
-    }
-}
-
-package "pkg/database" <<Folder>> {
-    class "NewPostgresConnection()" as NewPostgresConnectionFunc {
-        .. static ..
-        + NewPostgresConnection(cfg *config.Config) : (*gorm.DB, error)
-    }
-    NewPostgresConnectionFunc --> config.Config : uses
-    NewPostgresConnectionFunc ..> "gorm.DB" : creates
 }
 
 @enduml

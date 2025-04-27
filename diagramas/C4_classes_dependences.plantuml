@@ -1,0 +1,17 @@
+@startuml
+' Define a skin for better visuals
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+' Dependencies between packages/components
+main --> config.LoadConfigFunc : calls
+main --> database.NewPostgresConnectionFunc : calls
+main --> repository.NewPostgresCustomerRepository : creates
+main --> service.NewCustomerService : creates
+main --> handler.NewCustomerHandler : creates
+main --> handler.CustomerHandler : uses
+main --> middleware.LoggerFunc : uses
+
+handler.CustomerHandler ..> gin.Engine : uses
+
+@enduml
