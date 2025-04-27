@@ -112,11 +112,36 @@ Para visualizar a arquitetura da Customer API, foi utilizado o modelo C4, que de
 
 ### Nível 1: Diagrama de Contexto do Sistema
 
-Este diagrama mostra a API Customer dentro do seu ambiente, interagindo com usuários e outros sistemas.
+
+
+### Nível 1: Diagrama de Contexto do Sistema
+
+Este diagrama mostra a API Customer (`Customer API`) como uma "caixa preta" e como ela se integra ao seu ambiente, interagindo com usuários e outros sistemas externos.
 
 ![C4_Context](diagramas/C4_Context.png)
 
+**Elementos Principais:**
+
+*   **Sistema Principal:** `Customer API` - O sistema que estamos construindo, responsável pelo gerenciamento de clientes.
+*   **Usuários/Personas:**
+    *   `Usuário Final`: Interage com o sistema indiretamente, através de uma aplicação cliente.
+
+*   **Sistemas Externos:**
+    *   `Aplicação Cliente` (Ex: Web App, Mobile App): Consome a `Customer API` para realizar operações CRUD de clientes (via requisições HTTP/REST).
+    *   `Banco de Dados` (Ex: PostgreSQL): Sistema onde a `Customer API` persiste e recupera os dados dos clientes.
+
+**Interações Chave:**
+
+1.  O `Usuário Final` utiliza a `Aplicação Cliente`.
+2.  A `Aplicação Cliente` envia requisições (criar, ler, atualizar, deletar clientes) para a `Customer API`.
+3.  A `Customer API` interage com o `Banco de Dados` para ler e gravar informações dos clientes.
+
+Este diagrama de contexto ajuda a entender o escopo do sistema `Customer API` e suas principais dependências externas.
+
+
+
 ### Nível 2: Diagrama de Contêiner
+
 
 Este diagrama detalha os principais blocos de construção da API Customer, como a própria aplicação web/API, o banco de dados, etc.
 
@@ -278,8 +303,6 @@ A base URL para a API é `/api`.
 | `GET`    | `/customers/search`  | Busca clientes pelo nome (`?name=...`). |
 | `PUT`    | `/customers/{id}`    | Atualiza um cliente existente.        |
 | `DELETE` | `/customers/{id}`    | Exclui um cliente.                    |
-| `GET`    | `/health`            | Verifica a saúde da aplicação.        |
-| `GET`    | `/swagger/*any`      | Acessa a documentação Swagger UI.     |
 
 
 ### Documentação Swagger
