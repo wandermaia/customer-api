@@ -1,0 +1,18 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Diagrama de Contêineres para Customer API
+
+System_Ext(client_app, "Aplicação Cliente", "Ex: Web App, Mobile App.")
+
+System_Boundary(c1, "Customer API") {
+    Container(api_app, "API Application", "Go", "Fornece a API RESTful. Contém a lógica de negócio (CustomerService) e acesso a dados.")
+    ContainerDb(db_schema, "Banco de Dados (Schema)", "PostgreSQL", "Armazena os dados dos clientes (tabelas: customers, etc.).")
+}
+
+Rel(client_app, api_app, "Faz chamadas API", "JSON/HTTP")
+Rel(api_app, db_schema, "Lê e escreve", "SQL/TCP")
+
+@enduml

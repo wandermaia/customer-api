@@ -1,0 +1,21 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Diagrama de Contexto do Sistema para Customer API
+
+Person(user, "Usuário Final", "Pessoa que utiliza a aplicação cliente para gerenciar informações de clientes.")
+System_Ext(client_app, "Aplicação Cliente", "Ex: Web App, Mobile App. Interface utilizada pelo usuário final.")
+System(customer_api, "Customer API", "API RESTful para gerenciamento de clientes (O sistema que estamos construindo).")
+SystemDb_Ext(database, "Banco de Dados", "Repositório persistente para os dados dos clientes (Ex: PostgreSQL).")
+
+Rel(user, client_app, "Usa")
+Rel(client_app, customer_api, "Faz chamadas API", "JSON/HTTP")
+Rel(customer_api, database, "Lê e escreve", "SQL/Driver DB")
+
+' Opcional: Adicionar outros sistemas se existirem
+' System_Ext(auth_system, "Sistema de Autenticação", "Valida credenciais do usuário.")
+' Rel(customer_api, auth_system, "Valida token/usuário")
+
+@enduml

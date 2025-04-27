@@ -1,0 +1,24 @@
+@startuml C4_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Diagrama de Componentes para API Application (Go)
+
+Container_Boundary(api_app, "API Application") {
+    Component(http_handler, "Web Controller/Handler", "Go (net/http, Gin, Echo, etc.)", "Recebe requisições HTTP, delega para o serviço e retorna respostas.")
+    Component(customer_service, "Customer Service", "Go (`service.CustomerService`)", "Implementa a lógica de negócio principal para operações de cliente. Orquestra validações e acesso ao repositório.")
+    Component(customer_repo, "Customer Repository", "Go (`repository.CustomerRepository`)", "Abstrai o acesso aos dados do cliente no banco de dados.")
+    Component(domain_model, "Domain Model", "Go (`model.Customer`)", "Define as estruturas de dados centrais (Cliente) e suas validações (`Validate()`).")
+
+    Rel(http_handler, customer_service, "Usa", "Go interface call")
+    Rel(customer_service, domain_model, "Usa/Valida")
+    Rel(customer_service, customer_repo, "Usa", "Go interface call")
+    Rel(customer_repo, domain_model, "Retorna/Recebe")
+}
+
+ContainerDb_Ext(db_schema, "Banco de Dados (Schema)", "PostgreSQL", "Armazena os dados dos clientes.")
+Rel(customer_repo, db_schema, "Executa queries", "SQL/Driver DB")
+
+
+@enduml

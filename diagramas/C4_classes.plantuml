@@ -1,0 +1,160 @@
+@startuml
+' Define a skin for better visuals
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "cmd/api" <<Folder>> {
+  class main {
+    .. main() ..
+    + Creates dependencies
+    + Starts server
+  }
+}
+
+package "internal/config" <<Folder>> {
+  class Config {
+    + ServerPort: string
+    + DBHost: string
+    + DBPort: string
+    + DBUser: string
+    + DBPassword: string
+    + DBName: string
+    + Environment: string
+  }
+  Config ..> viper : uses
+
+  class "LoadConfig()" as LoadConfigFunc {
+    .. static ..
+    + LoadConfig() : (*Config, error)
+  }
+  LoadConfigFunc --> Config : creates
+}
+
+package "internal/domain/model" <<Folder>> {
+  class Customer {
+    + ID: uint
+    + Name: string
+    + Email: string
+    + Phone: string
+    + Address: string
+    + Active: bool
+    + CreatedAt: time.Time
+    + UpdatedAt: time.Time
+    --
+    + Validate() : error
+  }
+  Customer ..> "validator.v10" : uses
+}
+
+package "internal/domain/repository" <<Folder>> {
+  interface CustomerRepository {
+    + Create(ctx, customer) : error
+    + GetByID(ctx, id) : (*model.Customer, error)
+    + GetAll(ctx) : ([]*model.Customer, error)
+    + GetByName(ctx, name) : ([]*model.Customer, error)
+    + Update(ctx, customer) : error
+    + Delete(ctx, id) : error
+    + Count(ctx) : (int64, error)
+  }
+
+  class postgresCustomerRepository {
+    - db: *gorm.DB
+    --
+    + Create(ctx, customer) : error
+    + GetByID(ctx, id) : (*model.Customer, error)
+    + GetAll(ctx) : ([]*model.Customer, error)
+    + GetByName(ctx, name) : ([]*model.Customer, error)
+    + Update(ctx, customer) : error
+    + Delete(ctx, id) : error
+    + Count(ctx) : (int64, error)
+  }
+  postgresCustomerRepository ..|> CustomerRepository : implements
+  postgresCustomerRepository --> "gorm.DB" : uses
+  postgresCustomerRepository --> model.Customer : uses
+}
+
+package "internal/domain/service" <<Folder>> {
+  interface CustomerService {
+    + CreateCustomer(ctx, customer) : error
+    + GetCustomerByID(ctx, id) : (*model.Customer, error)
+    + GetAllCustomers(ctx) : ([]*model.Customer, error)
+    + GetCustomersByName(ctx, name) : ([]*model.Customer, error)
+    + UpdateCustomer(ctx, customer) : error
+    + DeleteCustomer(ctx, id) : error
+    + CountCustomers(ctx) : (int64, error)
+  }
+
+  class customerService {
+    - repo: repository.CustomerRepository
+    --
+    + CreateCustomer(ctx, customer) : error
+    + GetCustomerByID(ctx, id) : (*model.Customer, error)
+    + GetAllCustomers(ctx) : ([]*model.Customer, error)
+    + GetCustomersByName(ctx, name) : ([]*model.Customer, error)
+    + UpdateCustomer(ctx, customer) : error
+    + DeleteCustomer(ctx, id) : error
+    + CountCustomers(ctx) : (int64, error)
+  }
+  customerService ..|> CustomerService : implements
+  customerService --> repository.CustomerRepository : uses
+  customerService --> model.Customer : uses
+}
+
+package "internal/handler" <<Folder>> {
+  class CustomerHandler {
+    - service: service.CustomerService
+    --
+    + RegisterRoutes(router *gin.Engine)
+    + CreateCustomer(c *gin.Context)
+    + GetCustomerByID(c *gin.Context)
+    + GetAllCustomers(c *gin.Context)
+    + GetCustomersByName(c *gin.Context)
+    + UpdateCustomer(c *gin.Context)
+    + DeleteCustomer(c *gin.Context)
+    + CountCustomers(c *gin.Context)
+  }
+  CustomerHandler --> service.CustomerService : uses
+  CustomerHandler --> model.Customer : uses
+  CustomerHandler --> "gin.Context" : uses
+  CustomerHandler --> utils.ErrorResponse : uses
+  CustomerHandler --> utils.CountResponse : uses
+}
+
+package "internal/middleware" <<Folder>> {
+    class "Logger()" as LoggerFunc {
+        .. static ..
+        + Logger() : gin.HandlerFunc
+    }
+    LoggerFunc --> "gin.Context" : uses
+}
+
+package "internal/utils" <<Folder>> {
+    class ErrorResponse {
+        + Error: string
+    }
+    class CountResponse {
+        + Count: int64
+    }
+}
+
+package "pkg/database" <<Folder>> {
+    class "NewPostgresConnection()" as NewPostgresConnectionFunc {
+        .. static ..
+        + NewPostgresConnection(cfg *config.Config) : (*gorm.DB, error)
+    }
+    NewPostgresConnectionFunc --> config.Config : uses
+    NewPostgresConnectionFunc ..> "gorm.DB" : creates
+}
+
+' Dependencies between packages/components
+main --> config.LoadConfigFunc : calls
+main --> database.NewPostgresConnectionFunc : calls
+main --> repository.NewPostgresCustomerRepository : creates
+main --> service.NewCustomerService : creates
+main --> handler.NewCustomerHandler : creates
+main --> handler.CustomerHandler : uses
+main --> middleware.LoggerFunc : uses
+
+handler.CustomerHandler ..> gin.Engine : uses
+
+@enduml
