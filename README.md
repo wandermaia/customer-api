@@ -197,14 +197,17 @@ Este diagrama decompõe o contêiner `API Application (Go)` em seus principais b
     *   Realizar validações básicas de entrada.
     *   Chamar os métodos apropriados do `Customer Service` para processar a requisição.
     *   Formatar as respostas (sucesso ou erro) em JSON e enviá-las de volta ao cliente.
+
 *   **`Customer Service`**: Localizado em `internal/domain/service`, este componente encapsula a lógica de negócios principal:
     *   Orquestra as operações de gerenciamento de clientes (criar, buscar, atualizar, deletar, contar).
     *   Aplica regras de negócio e validações mais complexas (utilizando o `Domain Model`).
     *   Interage com o `Customer Repository` para persistir e recuperar dados.
+
 *   **`Customer Repository (GORM)`**: Localizado em `internal/domain/repository`, este componente abstrai o acesso aos dados:
     *   Implementa a interface `CustomerRepository`.
     *   Traduz as operações de domínio (ex: `GetByID`, `Create`) em operações específicas do banco de dados (ex: comandos SQL executados via GORM).
     *   Interage diretamente com o contêiner `Database (PostgreSQL)`.
+
 *   **`Domain Model (Customer)`**: Localizado em `internal/domain/model`, define as estruturas de dados centrais:
     *   Representa a entidade `Customer` com seus atributos.
     *   Inclui métodos de validação (`Validate()`) para garantir a integridade dos dados.
