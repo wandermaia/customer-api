@@ -411,6 +411,12 @@ A base URL para a API é `/api`.
 | `DELETE` | `/customers/{id}`    | Exclui um cliente.                    |
 
 
+### Testes de funcionalidade da API
+
+
+Para a realização dos testes funcionais foi criado um arquivo http no caminho `test/customer.http`, permitindo a execução dos testes dentro do próprio **VScode**, através da extensão `REST Client`.
+
+
 ### Documentação Swagger
 
 
@@ -531,6 +537,11 @@ https://github.com/stretchr/testify
 gomock
 
 https://github.com/golang/mock
+
+
+REST Client
+
+https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
 
 The C4 model for visualising software architecture
